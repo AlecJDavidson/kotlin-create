@@ -55,6 +55,12 @@ plugins {
 }
 EOF
 
+# --- gradle.properties for AndroidX ---
+cat > gradle.properties <<EOF
+android.useAndroidX=true
+android.enableJetifier=true
+EOF
+
 # --- app/build.gradle.kts ---
 mkdir -p app
 cat > app/build.gradle.kts <<EOF
@@ -64,11 +70,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.kotlin_create_test"
+    namespace = "$PACKAGE_NAME"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.kotlin_create_test"
+        applicationId = "$PACKAGE_NAME"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -81,10 +87,13 @@ android {
         }
     }
 
-    // Make Java/Kotlin use the same version
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
@@ -93,22 +102,19 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
 }
-
-kotlin {
-    jvmToolchain(17) // ✅ Ensures Kotlin uses JVM 17
-}
 EOF
 
 # --- AndroidManifest.xml ---
 mkdir -p app/src/main
 cat > app/src/main/AndroidManifest.xml <<EOF
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="$PACKAGE_NAME">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -193,6 +199,10 @@ This app displays a number and increments it each time you press the button.
 
 ## 🛠️ Build
 
-```bash
-./gradlew assembleDebug
+\`\`\`bash
+./gradlew clean assembleDebug
+\`\`\`
+EOF
+
+echo "✅ Project $APP_NAME created successfully!"
 
