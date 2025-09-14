@@ -64,11 +64,11 @@ plugins {
 }
 
 android {
-    namespace = "$PACKAGE_NAME"
+    namespace = "com.example.kotlin_create_test"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "$PACKAGE_NAME"
+        applicationId = "com.example.kotlin_create_test"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -80,12 +80,22 @@ android {
             isMinifyEnabled = false
         }
     }
+
+    // Make Java/Kotlin use the same version
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
+}
+
+kotlin {
+    jvmToolchain(17) // ✅ Ensures Kotlin uses JVM 17
 }
 EOF
 
